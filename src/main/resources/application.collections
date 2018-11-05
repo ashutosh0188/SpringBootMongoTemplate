@@ -1,0 +1,4 @@
+#This document refers to all mongodb db & collections name
+#db: db-cp-tracku
+#1. User related collections
+#user, user_profile
