@@ -86,13 +86,16 @@ public class UserRepository {
 
 	public boolean resetPassword(UserPasswordReset upr) {
 		Query q = new Query();
+		
 		CriteriaDefinition cd = Criteria.where("_id").is(upr.getId())
-				.and("client").is(upr.getClient()).and("password")
-				.is(upr.getOldPassword());
+				.and("client").is(upr.getClient())
+				.and("password").is(upr.getOldPassword())
+				.and("token").is(upr.getToken());
 		q.addCriteria(cd);
 		Update u = Update.update("password", upr.getNewPassword());
-		UpdateResult ur = mongoTemplate.updateFirst(q, u, User.class);
-		return ur.wasAcknowledged() ? true : false;
+		UpdateResult ur = mongoTemplate.updateFirst(q, u, User.class, USER);
+		
+		return ur.getModifiedCount()>0? true : false;
 	}
 	
 	public User getUserProfile(String id, String client, String token){
@@ -113,7 +116,7 @@ public class UserRepository {
 		q.addCriteria(cd);
 		Update u = Update.update("token", null);
 		UpdateResult ur = mongoTemplate.updateFirst(q, u, User.class);
-		return ur.wasAcknowledged() ? true : false;
+		return ur.getModifiedCount()>0 ? true : false;
 	}
 	
 	public List<User> getAllUsers(String client){
